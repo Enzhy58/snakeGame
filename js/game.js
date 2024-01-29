@@ -23,8 +23,13 @@ const onload = () => {
                     }
                 });
 
+                if (state.food.apples.x === x && state.food.apples.y === y) {
+                    ctx.fillStyle = colors.apples;
+                    ctx.fillRect(x * ceil, y * ceil, ceil, ceil);
+                }
+
                 state.maps[`map${state.level}`].cords.forEach(m => {
-                    if(m.x === x && m.y === y){
+                    if (m.x === x && m.y === y) {
                         ctx.fillStyle = colors.wall;
                         ctx.fillRect(x * ceil, y * ceil, ceil, ceil);
                     }
@@ -35,25 +40,26 @@ const onload = () => {
 
     renderGame();
 
-    let startTime = 0;
-    let currentTime = 0;
-    let time = 0;
-    let currentSecond = 0;
+    let startTime      = 0,
+        currentTime    = 0,
+        time           = 0,
+        currentSecond  = 0;
 
     animateRAFInterval.start(() => {
 
-        if (startTime === 0) {
+        if(startTime === 0) {
             startTime = new Date().getTime();
         }
 
         currentTime = new Date().getTime();
         time = currentTime - startTime;
-        currentSecond = Math.floor(time / 100);
+        currentSecond = Math.floor(time / state.snake.speed);
 
         if (currentSecond > 0) {
             startTime = 0;
 
             moveSnake();
+            addNewFood();
             renderGame();
 
         }

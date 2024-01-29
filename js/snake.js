@@ -29,10 +29,16 @@ const moveSnake = () => {
 
     newMovementSnake = _setTeleportSnake(state.snake, newMovementSnake);
 
-    state.snake.tail.shift();
+    if(_getCollisionSnake(newMovementSnake)){
+        return true;
+    }
+
+    state.snake.lastPosTail = state.snake.tail.shift();
     headSnake.h = false;
 
     state.snake.tail.push(newMovementSnake);
+
+    _checkGrowth();
 };
 
 const _setTeleportSnake = (snake, newHeadSnake) => {
@@ -70,6 +76,35 @@ const _hasDirection = (snake, direction) => {
     return false;
 };
 
+const _checkGrowth = () => {
+    const { snake, food: { apples } } = state;
+    const headSnake = _getHeadSnake(snake);
+
+    if(apples.x === headSnake.x && apples.y === headSnake.y){
+        state.food.didAte = true;
+        state.snake.tail.unshift(state.snake.lastPosTail);
+        state.snake.speed = state.snake.speed - 0.5
+    }
+};
+
+const _getCollisionSnake = (headSnake) => {
+    const { snake, maps, level } = state;
+    const { tail } = snake;
+    const map = maps[`map${level}`];
+
+    for(let t = 0; t < tail.length; t += 1){
+        if(headSnake.x === tail[t].x && headSnake.y === tail[t].y){
+            return true;
+        }
+    }
+
+    for(let m = 0; m < map.cords.length; m += 1){
+        if(headSnake.x === map.cords[m].x && headSnake.y === map.cords[m].y){
+            return true;
+        }
+    }
+};
+
 const _getHeadSnake = (snake) => {
     return snake.tail[snake.tail.length - 1];
-}
+};

@@ -60,7 +60,7 @@ const _hasDirection = (snake, direction) => {
 
     if(
         (direction === "left" && headSnake.d !== "right") ||
-        (direction === "rigth" && headSnake.d !== "left") ||
+        (direction === "right" && headSnake.d !== "left") ||
         (direction === "up" && headSnake.d !== "down") ||
         (direction === "down" && headSnake.d !== "up")
     ){
@@ -68,4 +68,8 @@ const _hasDirection = (snake, direction) => {
     }
 
     return false;
-}
+};
+
+// const _getHeadSnake = (snake) => {
+//     return snake.tail[snake.teil.length - 1];
+// }

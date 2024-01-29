@@ -1,7 +1,10 @@
 const changeDirection = (keyCode) => {
     const direction = mapKeyCode(keyCode);
 
-    state.snake.direction = direction;
+    if(_hasDirection(state.snake, direction)){
+        state.snake.direction = direction;
+    }
+
 };
 
 const moveSnake = () => {
@@ -37,17 +40,32 @@ const _setTeleportSnake = (snake, newHeadSnake) => {
     const rowEdge = row - 1;
 
     if(newHeadSnake.x > rowEdge && direction === "right"){
-        return { x: 0, y: newHeadSnake.y, d: newHeadSnake.d, h: newHeadSnake.h };
+        return { ...newHeadSnake, x: 0 };
     }
     if(newHeadSnake.x < 0 && direction === "left"){
-        return { x: rowEdge, y: newHeadSnake.y, d: newHeadSnake.d, h: newHeadSnake.h };
+        return { ...newHeadSnake, x: rowEdge };
     }
     if(newHeadSnake.y < 0 && direction === "up"){
-        return { x: newHeadSnake.x, y: rowEdge, d: newHeadSnake.d, h: newHeadSnake.h };
+        return { ...newHeadSnake, y: rowEdge };
     }
     if(newHeadSnake.y > rowEdge && direction === "down"){
-        return { x: newHeadSnake.x, y: 0, d: newHeadSnake.d, h: newHeadSnake.h };
+        return { ...newHeadSnake, y: 0 };
     }
 
-    return { x: newHeadSnake.x, y: newHeadSnake.y, d: newHeadSnake.d, h: newHeadSnake.h };
+    return { ...newHeadSnake };
 };
+
+const _hasDirection = (snake, direction) => {
+    const headSnake = snake.tail[snake.tail.length - 1];
+
+    if(
+        (direction === "left" && headSnake.d !== "right") ||
+        (direction === "rigth" && headSnake.d !== "left") ||
+        (direction === "up" && headSnake.d !== "down") ||
+        (direction === "down" && headSnake.d !== "up")
+    ){
+        return true;
+    }
+
+    return false;
+}

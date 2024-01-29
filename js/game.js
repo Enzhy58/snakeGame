@@ -22,6 +22,13 @@ const onload = () => {
                         }
                     }
                 });
+
+                state.maps[`map${state.level}`].cords.forEach(m => {
+                    if(m.x === x && m.y === y){
+                        ctx.fillStyle = colors.wall;
+                        ctx.fillRect(x * ceil, y * ceil, ceil, ceil);
+                    }
+                });
             }
         }
     };

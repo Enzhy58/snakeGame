@@ -10,10 +10,10 @@ const onload = () => {
         snake.tail.forEach(s => {
             if (s.x === x && s.y === y) {
                 ctx.fillStyle = colors.snakeBody;
-                ctx.fillRect(x * ceil, y * ceil, ceil, ceil);
+                ctx.fillRect(x * ceil, y * ceil + board.height, ceil, ceil);
                 if (s.h) {
                     ctx.fillStyle = colors.snakeHead;
-                    ctx.fillRect(x * ceil, y * ceil, ceil, ceil);
+                    ctx.fillRect(x * ceil, y * ceil + board.height, ceil, ceil);
                 }
             }
         });
@@ -22,7 +22,7 @@ const onload = () => {
     const _renderFood = (food, x, y) => {
         if (food.apples.x === x && food.apples.y === y) {
             ctx.fillStyle = colors.apples;
-            ctx.fillRect(x * ceil, y * ceil, ceil, ceil);
+            ctx.fillRect(x * ceil, y * ceil + board.height, ceil, ceil);
         }
     };
 
@@ -30,15 +30,49 @@ const onload = () => {
         map.cords.forEach(m => {
             if (m.x === x && m.y === y) {
                 ctx.fillStyle = colors.wall;
-                ctx.fillRect(x * ceil, y * ceil, ceil, ceil);
+                ctx.fillRect(x * ceil, y * ceil + board.height, ceil, ceil);
             }
         });
+    };
+
+    const _renderScoreBoard = (score, level) => {
+        ctx.fillStyle = colors.popup;
+        ctx.fillRect(0, 0, board.width, board.height);
+
+        ctx.fillStyle = colors.text;
+        ctx.font = board.font;
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
+        ctx.fillText(score, board.textScore.x, board.textScore.y);
+
+        ctx.fillStyle = colors.apples;
+        ctx.fillRect(board.apples.x, board.apples.y, ceil, ceil);
+
+        ctx.fillStyle = colors.text;
+        ctx.font = board.font;
+        ctx.textAlign = "left";
+        ctx.fillText(`Level: ${level}`, board.textLevel.x, board.textLevel.y);
+    };
+
+    const _renderPopup = (text) => {
+        const halfW = (width / 2),
+              halfH = (height / 2),
+              x     = halfW - (popup.width / 2),
+              y     = halfH - (popup.height / 2);
+        ctx.fillStyle = colors.popup;
+        ctx.fillRect(x, y, popup.width, popup.height);
+        
+        ctx.fillStyle = colors.text;
+        ctx.textAlign = "center";
+        ctx.Baseline = "middle";
+        ctx.font = popup.font;
+        ctx.fillText(text, halfW, halfH);
     };
 
     const renderGame = () => {
         ctx.clearRect(0, 0, width, height);
 
-        const { snake, food, maps, level } = state;
+        const { snake, food, maps, level, score } = state;
 
         for (let y = 0; y < row; y += 1) {
             for (let x = 0; x < row; x += 1) {
@@ -52,6 +86,10 @@ const onload = () => {
 
             }
         }
+
+        _renderScoreBoard(score, level);
+        _renderPopup("Press any key");
+
     };
 
     renderGame();

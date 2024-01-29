@@ -9,7 +9,7 @@ const changeDirection = (keyCode) => {
 
 const moveSnake = () => {
 
-    const headSnake = state.snake.tail[state.snake.tail.length - 1];
+    const headSnake = _getHeadSnake(state.snake);
     const direction = state.snake.direction;
 
     let newMovementSnake;
@@ -56,7 +56,7 @@ const _setTeleportSnake = (snake, newHeadSnake) => {
 };
 
 const _hasDirection = (snake, direction) => {
-    const headSnake = snake.tail[snake.tail.length - 1];
+    const headSnake = _getHeadSnake(snake);
 
     if(
         (direction === "left" && headSnake.d !== "right") ||
@@ -70,6 +70,6 @@ const _hasDirection = (snake, direction) => {
     return false;
 };
 
-// const _getHeadSnake = (snake) => {
-//     return snake.tail[snake.teil.length - 1];
-// }
+const _getHeadSnake = (snake) => {
+    return snake.tail[snake.tail.length - 1];
+}

@@ -1,4 +1,4 @@
-let width, height, board, row, ceil, colors;
+let width, height, board, row, ceil, colors, amountLevels;
 
 width = 600;
 

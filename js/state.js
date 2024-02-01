@@ -14,7 +14,7 @@ const state = {
         didAte: true,
         apples: {}
     },
-    level: 2,
+    level: 1,
     maps: {
         "map1": map1,
         "map2": map2,

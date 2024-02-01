@@ -30,6 +30,12 @@ const moveSnake = () => {
     newMovementSnake = _setTeleportSnake(state.snake, newMovementSnake);
 
     if(_getCollisionSnake(newMovementSnake)){
+        state.gameStart = false;
+        state.nextLevel = false;
+        state.win = false;
+
+        state.gameOver = true;
+        
         return true;
     }
 
@@ -83,7 +89,8 @@ const _checkGrowth = () => {
     if(apples.x === headSnake.x && apples.y === headSnake.y){
         state.food.didAte = true;
         state.snake.tail.unshift(state.snake.lastPosTail);
-        state.snake.speed = state.snake.speed - 0.5
+        state.snake.speed = state.snake.speed - 0.5;
+        state.score = state.score + 1;
     }
 };
 
@@ -107,4 +114,53 @@ const _getCollisionSnake = (headSnake) => {
 
 const _getHeadSnake = (snake) => {
     return snake.tail[snake.tail.length - 1];
+};
+
+const checkNextLevel = () => {
+    const { score, maps, level } = state;
+    const map = maps[`map${level}`];
+
+    if(score >= map.completed && level < amountLevels){
+        state.snake = {
+            tail: [
+                { x: 1, y: 1, d: "right", h: false },
+                { x: 2, y: 1, d: "right", h: false },
+                { x: 3, y: 1, d: "right", h: false },
+                { x: 4, y: 1, d: "right", h: true }
+            ],
+            direction: "right",
+            lastPosTail: {},
+            speed: 300
+        };
+
+        state.food = {
+            didAte: true,
+            apples: {}
+        };
+
+        state.score = 0;
+        state.gameStart = false;
+        state.win = false;
+        state.gameOver = false;
+
+        state.nextLevel = true;
+        state.level = state.level + 1;
+
+        return true;
+    }
+};
+
+const checkWin = () => {
+    const { score, maps, level } = state;
+    const map = maps[`map${level}`];
+
+    if(score >= map.completed && level >= amountLevels){
+        state.gameStart = false;
+        state.gameOver = false;
+        state.nextLevel = false;
+
+        state.win = true;
+
+        return true;
+    }
 };

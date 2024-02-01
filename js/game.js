@@ -56,12 +56,12 @@ const onload = () => {
 
     const _renderPopup = (text) => {
         const halfW = (width / 2),
-              halfH = (height / 2),
-              x     = halfW - (popup.width / 2),
-              y     = halfH - (popup.height / 2);
+            halfH = (height / 2),
+            x = halfW - (popup.width / 2),
+            y = halfH - (popup.height / 2);
         ctx.fillStyle = colors.popup;
         ctx.fillRect(x, y, popup.width, popup.height);
-        
+
         ctx.fillStyle = colors.text;
         ctx.textAlign = "center";
         ctx.Baseline = "middle";
@@ -72,7 +72,7 @@ const onload = () => {
     const renderGame = () => {
         ctx.clearRect(0, 0, width, height);
 
-        const { snake, food, maps, level, score } = state;
+        const { snake, food, maps, level, score, gameStart, win, gameOver } = state;
 
         for (let y = 0; y < row; y += 1) {
             for (let x = 0; x < row; x += 1) {
@@ -87,21 +87,30 @@ const onload = () => {
             }
         }
 
+        if(!gameStart){
+            _renderPopup("Press any key");
+        }
+        if(win){
+            _renderPopup("You win!");
+        }
+        if(gameOver){
+            _renderPopup("Game over");
+        }
+
         _renderScoreBoard(score, level);
-        _renderPopup("Press any key");
 
     };
 
     renderGame();
 
-    let startTime      = 0,
-        currentTime    = 0,
-        time           = 0,
-        currentSecond  = 0;
+    let startTime = 0,
+        currentTime = 0,
+        time = 0,
+        currentSecond = 0;
 
     animateRAFInterval.start(() => {
 
-        if(startTime === 0) {
+        if (startTime === 0) {
             startTime = new Date().getTime();
         }
 
@@ -112,14 +121,29 @@ const onload = () => {
         if (currentSecond > 0) {
             startTime = 0;
 
-            moveSnake();
-            addNewFood();
-            renderGame();
+            if(state.gameStart) {
+
+                checkNextLevel();
+                checkWin();
+                moveSnake();
+                addNewFood();
+                renderGame();
+
+                if(state.win){
+                    animateRAFInterval.cancel();
+                    document.removeEventListener("keydown", onkeydown);
+                }
+                if(state.gameOver){
+                    animateRAFInterval.cancel();
+                    document.removeEventListener("keydown", onkeydown);
+                }
+            }
 
         }
     });
 
     const onkeydown = (e) => {
+        state.gameStart = true;
         changeDirection(e.keyCode);
 
     };
